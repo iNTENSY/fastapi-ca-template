@@ -5,7 +5,9 @@ from dishka import Provider, provide, Scope
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker
 
 from app.application.interfaces.redis import IRedis
+from app.application.interfaces.session import ISessionProcessor
 from app.infrastructure.cache.redis_adapter import RedisAdapter
+from app.infrastructure.services.internal.authentication.session import SessionProcessorImp
 from app.infrastructure.settings.core import Settings
 from app.infrastructure.settings.database import DatabaseSettings
 from app.infrastructure.settings.redis import RedisSettings
@@ -56,3 +58,9 @@ class RedisProvider(Provider):
     async def provide_redis(self, settings: RedisSettings) -> IRedis:
         aior = aioredis.from_url(settings.url, encoding="utf8", decode_responses=True)
         return RedisAdapter(aior)
+
+
+class SessionProvider(Provider):
+    @provide(scope=Scope.APP, provides=ISessionProcessor)
+    async def provide_session(self, redis: IRedis, settings: SessionSettings) -> ISessionProcessor:
+        return SessionProcessorImp(redis, settings)
