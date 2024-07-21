@@ -1,10 +1,15 @@
+import os
 from typing import AsyncIterable
 
+import aioredis
 from dishka import Provider, provide, Scope
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker
 
+from app.application.interfaces.redis import IRedis
+from app.infrastructure.cache.redis_adapter import RedisAdapter
 from app.infrastructure.settings.core import Settings
 from app.infrastructure.settings.database import DatabaseSettings
+from app.infrastructure.settings.redis import RedisSettings
 from app.infrastructure.settings.session import SessionSettings
 
 
@@ -41,3 +46,14 @@ class SettingsProvider(Provider):
     ) -> Settings:
         secret_key = "JKGBHJBkjkhbgUIY*YUHg371245"
         return Settings.create(secret_key, db=db, session=session)
+
+
+class RedisProvider(Provider):
+    @provide(scope=Scope.APP, provides=RedisSettings)
+    def provide_settings(self) -> RedisSettings:
+        return RedisSettings.from_env()
+
+    @provide(scope=Scope.APP, provides=IRedis)
+    async def provide_redis(self, settings: RedisSettings) -> IRedis:
+        aior = aioredis.from_url(settings.url)
+        return RedisAdapter(aior)

@@ -2,13 +2,14 @@ from dishka import AsyncContainer, make_async_container
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 
-from app.infrastructure.di.providers.adapters import SQLAlchemyProvider, SettingsProvider
+from app.infrastructure.di.providers.adapters import SQLAlchemyProvider, SettingsProvider, RedisProvider
 
 
 def container_factory() -> AsyncContainer:
     return make_async_container(
         SQLAlchemyProvider(),
-        SettingsProvider()
+        SettingsProvider(),
+        RedisProvider()
     )
 
 
