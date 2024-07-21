@@ -26,4 +26,4 @@ def app_factory() -> FastAPI:
 
 
 if __name__ == "__main__":
-    uvicorn.run("app.web_api.entrypoint:app_factory", reload=True, factory=True)
+    uvicorn.run("app.presentation.entrypoint:app_factory", reload=True, factory=True)
