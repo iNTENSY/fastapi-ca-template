@@ -1,13 +1,12 @@
 from typing import Any
 
-import aioredis
-
+from redis import asyncio as aioredis
 from app.application.interfaces.redis import IRedis
 from app.infrastructure.cache.schema import RedisSchema
 
 
 class RedisAdapter(IRedis):
-    def __init__(self, redis: aioredis.client.Redis):
+    def __init__(self, redis: aioredis.Redis):
         self.__redis = redis
 
     async def get(self, key: Any) -> Any:

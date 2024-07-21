@@ -1,7 +1,6 @@
-import os
 from typing import AsyncIterable
 
-import aioredis
+from redis import asyncio as aioredis
 from dishka import Provider, provide, Scope
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker
 
@@ -55,5 +54,5 @@ class RedisProvider(Provider):
 
     @provide(scope=Scope.APP, provides=IRedis)
     async def provide_redis(self, settings: RedisSettings) -> IRedis:
-        aior = aioredis.from_url(settings.url)
+        aior = aioredis.from_url(settings.url, encoding="utf8", decode_responses=True)
         return RedisAdapter(aior)
