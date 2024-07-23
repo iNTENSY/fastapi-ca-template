@@ -52,11 +52,11 @@ class SettingsProvider(Provider):
 class RedisProvider(Provider):
     @provide(scope=Scope.APP, provides=RedisSettings)
     def provide_settings(self) -> RedisSettings:
-        return RedisSettings.from_env()
+        return RedisSettings.from_env(decode_responses=True)
 
     @provide(scope=Scope.APP, provides=IRedis)
     async def provide_redis(self, settings: RedisSettings) -> IRedis:
-        aior = aioredis.from_url(settings.url, encoding="utf8", decode_responses=True)
+        aior = aioredis.from_url(settings.url, encoding=settings.encoding, decode_responses=settings.decode_responses)
         return RedisAdapter(aior)
 
 
