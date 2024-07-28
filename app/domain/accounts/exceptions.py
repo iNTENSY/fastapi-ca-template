@@ -11,7 +11,7 @@ class AccountNotFoundError(DomainError):
         super().__init__(message="User not found")
 
 
-class InvalidUserDataError(DomainError):
+class InvalidAccountDataError(DomainError):
     def __init__(self):
         super().__init__(message="Invalid user data")
 
@@ -24,3 +24,13 @@ class UserIsNotAuthorizedError(DomainError):
 class UserBadPermissionError(DomainError):
     def __init__(self):
         super().__init__(message="User has bad permission")
+
+
+class TokenExpiredError(DomainError):
+    def __init__(self):
+        super().__init__(message="Token has expired")
+
+
+class InvalidTokenPayloadError(DomainError):
+    def __init__(self):
+        super().__init__(message="Token is not trusted")

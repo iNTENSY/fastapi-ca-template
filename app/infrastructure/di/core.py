@@ -3,7 +3,7 @@ from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 
 from app.infrastructure.di.providers.adapters import SQLAlchemyProvider, SettingsProvider, RedisProvider, \
-    SessionProvider
+    SessionProvider, SecurityHasher, TimezoneProvider, JwtProvider
 from app.infrastructure.di.providers.use_cases import UseCasesProvider, RepositoriesProvider
 
 
@@ -14,6 +14,9 @@ def ioc_factory() -> AsyncContainer:
         SettingsProvider(),
         RedisProvider(),
         SessionProvider(),
+        SecurityHasher(),
+        TimezoneProvider(),
+        JwtProvider(),
 
         # Use cases and repositories
         RepositoriesProvider(),

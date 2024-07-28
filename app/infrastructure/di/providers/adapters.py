@@ -5,12 +5,19 @@ from redis import asyncio as aioredis
 from dishka import Provider, provide, Scope
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker
 
+from app.application.interfaces.jwt import IJwtProcessor
+from app.application.interfaces.password_hasher import IPasswordHasher
 from app.application.interfaces.redis import IRedis
 from app.application.interfaces.session import ISessionProcessor
+from app.application.interfaces.timezone import IDateTimeProcessor
 from app.infrastructure.cache.redis_adapter import RedisAdapter
+from app.infrastructure.services.internal.authentication.jwt import JwtProcessor
 from app.infrastructure.services.internal.authentication.session import SessionProcessorImp
+from app.infrastructure.services.internal.datetimes.timezone import SystemDateTimeProvider, Timezone
+from app.infrastructure.services.internal.security.password_hasher import PasswordHasherImp
 from app.infrastructure.settings.core import Settings
 from app.infrastructure.settings.database import DatabaseSettings
+from app.infrastructure.settings.jwt import JwtSettings
 from app.infrastructure.settings.redis import RedisSettings
 from app.infrastructure.settings.session import SessionSettings
 
@@ -40,14 +47,22 @@ class SettingsProvider(Provider):
         timedelta_into_seconds = 3600
         return SessionSettings.create(timedelta_into_seconds)
 
+    @provide(scope=Scope.APP, provides=JwtSettings)
+    def provide_jwt_settings(self) -> JwtSettings:
+        secret_key = os.environ.get("SECRET_KEY")
+        expires_in = 30 * 60
+        algorithm = "HS256"
+        return JwtSettings.create(secret=secret_key, expires_in=expires_in, algorithm=algorithm)
+
     @provide(scope=Scope.APP, provides=Settings)
     def provide_project_settings(
             self,
             db: DatabaseSettings,
-            session: SessionSettings
+            session: SessionSettings,
+            jwt: JwtSettings
     ) -> Settings:
         secret_key = os.environ.get("SECRET_KEY")
-        return Settings.create(secret_key, db=db, session=session)
+        return Settings.create(secret_key, db=db, session=session, jwt=jwt)
 
 
 class RedisProvider(Provider):
@@ -65,3 +80,20 @@ class SessionProvider(Provider):
     @provide(scope=Scope.APP, provides=ISessionProcessor)
     async def provide_session(self, redis: IRedis, settings: SessionSettings) -> ISessionProcessor:
         return SessionProcessorImp(redis, settings)
+
+
+class SecurityHasher(Provider):
+    scope = Scope.APP
+    _app = provide(PasswordHasherImp, provides=IPasswordHasher)
+
+
+class TimezoneProvider(Provider):
+    @provide(scope=Scope.APP, provides=IDateTimeProcessor)
+    def provide_timezone(self) -> SystemDateTimeProvider:
+        return SystemDateTimeProvider(Timezone.MSK)
+
+
+class JwtProvider(Provider):
+    @provide(scope=Scope.APP, provides=IJwtProcessor)
+    def provide_jwt_processor(self, settings: JwtSettings, dt: IDateTimeProcessor) -> IJwtProcessor:
+        return JwtProcessor(settings, dt)

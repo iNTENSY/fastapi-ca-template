@@ -1,30 +1,49 @@
-from typing import Optional
+import datetime as dt
+import uuid
 
-from fastapi import HTTPException
-from fastapi.security import OAuth2PasswordBearer
-from fastapi.security.utils import get_authorization_scheme_param
-from starlette.requests import Request
-from starlette import status
+from jose import jwt, JWTError, ExpiredSignatureError
+from jose.exceptions import JWTClaimsError
 
-
-class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
-    """
-    That class looks for `"access_token"` into `cookies` (not headers).
-    """
-
-    async def __call__(self, request: Request) -> Optional[str]:
-        authorization = request.cookies.get("access_token")
-        scheme, param = get_authorization_scheme_param(authorization)
-        if not authorization or scheme.lower() != "bearer":
-            if self.auto_error:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Not authenticated",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
-            else:
-                return None
-        return param
+from app.application.interfaces.jwt import IJwtProcessor
+from app.application.interfaces.timezone import IDateTimeProcessor
+from app.domain.accounts.exceptions import InvalidTokenError, TokenExpiredError, InvalidTokenPayloadError
+from app.domain.core.value_objects import EmailVO, UuidVO
+from app.infrastructure.settings.jwt import JwtSettings
 
 
-oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="/api/v1/auth/login")
+class JwtProcessor(IJwtProcessor):
+    def __init__(
+            self,
+            settings: JwtSettings,
+            dt_processor: IDateTimeProcessor
+    ) -> None:
+        self.__settings = settings
+        self.__dt = dt_processor
+        self.__current_datetime = self.__dt.get_current_time()
+
+    def generate_token(self, uid: uuid.UUID, email: str) -> str:
+        issued_at = self.__current_datetime
+        expiration_time = issued_at + dt.timedelta(seconds=self.__settings.expires_in)
+        payload = {
+            "iat": issued_at,
+            "exp": expiration_time,
+            "sub": str(uid),
+            "email": email,
+        }
+        encoded_jwt = jwt.encode(payload, key=self.__settings.secret, algorithm=self.__settings.algorithm)
+        return encoded_jwt
+
+    def parse(self, token: str) -> tuple[UuidVO, EmailVO]:
+        try:
+            payload = jwt.decode(token, key=self.__settings.secret, algorithms=self.__settings.algorithm)
+            return UuidVO(payload["sub"]), EmailVO(payload["email"])
+        except ExpiredSignatureError:
+            raise TokenExpiredError
+        except JWTClaimsError:
+            raise InvalidTokenPayloadError
+        except JWTError:
+            raise InvalidTokenError
+
+    def refresh_token(self, token: str) -> str:
+        payload = self.parse(token)
+        return self.generate_token(*payload)
