@@ -1,3 +1,4 @@
+import os
 from typing import AsyncIterable
 
 from redis import asyncio as aioredis
@@ -45,7 +46,7 @@ class SettingsProvider(Provider):
             db: DatabaseSettings,
             session: SessionSettings
     ) -> Settings:
-        secret_key = "JKGBHJBkjkhbgUIY*YUHg371245"
+        secret_key = os.environ.get("SECRET_KEY")
         return Settings.create(secret_key, db=db, session=session)
 
 

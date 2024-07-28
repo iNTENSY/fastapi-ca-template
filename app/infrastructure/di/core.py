@@ -4,14 +4,20 @@ from fastapi import FastAPI
 
 from app.infrastructure.di.providers.adapters import SQLAlchemyProvider, SettingsProvider, RedisProvider, \
     SessionProvider
+from app.infrastructure.di.providers.use_cases import UseCasesProvider, RepositoriesProvider
 
 
 def ioc_factory() -> AsyncContainer:
     return make_async_container(
+        # Providers
         SQLAlchemyProvider(),
         SettingsProvider(),
         RedisProvider(),
-        SessionProvider()
+        SessionProvider(),
+
+        # Use cases and repositories
+        RepositoriesProvider(),
+        UseCasesProvider()
     )
 
 

@@ -6,7 +6,7 @@ class InvalidTokenError(DomainError):
         super().__init__(message="Invalid token")
 
 
-class UserNotFoundError(DomainError):
+class AccountNotFoundError(DomainError):
     def __init__(self):
         super().__init__(message="User not found")
 
