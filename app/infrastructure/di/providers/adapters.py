@@ -5,12 +5,15 @@ from redis import asyncio as aioredis
 from dishka import Provider, provide, Scope
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker
 
+from app.application.interfaces.email import IEmailService
 from app.application.interfaces.jwt import IJwtProcessor
 from app.application.interfaces.password_hasher import IPasswordHasher
 from app.application.interfaces.redis import IRedis
 from app.application.interfaces.session import ISessionProcessor
 from app.application.interfaces.timezone import IDateTimeProcessor
 from app.infrastructure.cache.redis_adapter import RedisAdapter
+from app.infrastructure.services.external.email.core import EmailServiceImp
+from app.infrastructure.services.external.email.settings import EmailSettings
 from app.infrastructure.services.internal.authentication.jwt import JwtProcessor
 from app.infrastructure.services.internal.authentication.session import SessionProcessorImp
 from app.infrastructure.services.internal.datetimes.timezone import SystemDateTimeProvider, Timezone
@@ -97,3 +100,17 @@ class JwtProvider(Provider):
     @provide(scope=Scope.APP, provides=IJwtProcessor)
     def provide_jwt_processor(self, settings: JwtSettings, dt: IDateTimeProcessor) -> IJwtProcessor:
         return JwtProcessor(settings, dt)
+
+
+class EmailProvider(Provider):
+    @provide(scope=Scope.APP, provides=EmailSettings)
+    def provide_email_settings(self) -> EmailSettings:
+        host = os.environ.get("EMAIL_HOST")
+        port = os.environ.get("EMAIL_PORT")
+        login = os.environ.get("EMAIL_LOGIN")
+        password = os.environ.get("EMAIL_PASSWORD")
+        return EmailSettings.create(host, int(port), login, password)
+
+    @provide(scope=Scope.REQUEST, provides=IEmailService)
+    async def provide_service(self, settings: EmailSettings) -> IEmailService:
+        return EmailServiceImp(settings)
