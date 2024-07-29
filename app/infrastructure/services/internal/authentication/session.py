@@ -14,17 +14,17 @@ class SessionProcessorImp(ISessionProcessor):
         self.__redis = redis
         self.__settings = settings
 
-    async def generate_session(self, account_id: uuid.UUID) -> RedisSchema:
+    async def generate_session(self, account_id: uuid.UUID) -> str:
         session_id = "".join(random.choices(string.ascii_letters, k=30))
         session = RedisSchema.create(key=session_id, value=str(account_id), ex=self.__settings.timedelta)
         await self.__redis.set(session)
-        return session
+        return session_id
 
     async def validate(self, session: str) -> tuple[str, str]:
         value = await self.__redis.get(key=session)
         if value is None:
             raise UserIsNotAuthorizedError
-        return session, value.decode()
+        return session, value # noqa: Value is auto-decoded
 
     async def delete_session(self, session: str) -> None:
         key, value = await self.validate(session)

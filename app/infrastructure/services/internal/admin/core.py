@@ -15,20 +15,17 @@ from app.infrastructure.settings.core import Settings
 async def init_sqladmin(app: FastAPI, container: AsyncContainer) -> None:
     """Admin integration."""
     async with container() as app_container:
-
-        # Not ready to use. Not all protocols are implemented
-
-        # settings = await app_container.get(Settings)
-        # backend = AdminAuthBackend(
-        #     secret_key=settings.secret_key,
-        #     redis=await app_container.get(IRedis),
-        #     session=await app_container.get(ISessionProcessor),
-        #     account_repository=await app_container.get(IAccountRepository),
-        #     pwd_hasher=await app_container.get(IPasswordHasher),
-        # )
+        settings = await app_container.get(Settings)
+        backend = AdminAuthBackend(
+            secret_key=settings.secret_key,
+            redis=await app_container.get(IRedis),
+            session=await app_container.get(ISessionProcessor),
+            account_repository=await app_container.get(IAccountRepository),
+            pwd_hasher=await app_container.get(IPasswordHasher),
+        )
         admin = Admin(
             app,
             engine=await app_container.get(AsyncEngine),
-            # authentication_backend=backend
+            authentication_backend=backend
         )
         admin.add_view(AccountAdmin)

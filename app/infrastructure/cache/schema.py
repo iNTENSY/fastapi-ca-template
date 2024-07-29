@@ -20,9 +20,9 @@ class RedisSchema:
     value: Any
     ex: int | dt.timedelta | None = None
     px: int | dt.timedelta | None = None
-    nx: bool | None = None
-    xx: bool | None = None
-    keepttl: bool | None = True
+    nx: bool = False
+    xx: bool = False
+    keepttl: bool = False
 
     @staticmethod
     def create(
@@ -31,9 +31,9 @@ class RedisSchema:
             *,
             ex: int | dt.timedelta | None = None,
             px: int | dt.timedelta | None = None,
-            nx: bool | None = None,
-            xx: bool | None = None,
-            keepttl: bool | None = True,
+            nx: bool = False,
+            xx: bool = False,
+            keepttl: bool = True,
     ) -> "RedisSchema":
         """Фабричный метод создания схемы для работы с Redis`ом."""
         return RedisSchema(name=key, value=value, ex=ex, px=px, nx=nx, xx=xx, keepttl=keepttl)

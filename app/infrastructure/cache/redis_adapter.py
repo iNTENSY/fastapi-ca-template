@@ -13,12 +13,9 @@ class RedisAdapter(IRedis):
         cached_value = await self.__redis.get(key)
         return cached_value
 
-    async def set(self, *collections: list[RedisSchema] | tuple[RedisSchema]) -> None:
-        if not all(isinstance(collection, RedisSchema) for collection in collections):
-            raise ValueError("All instance must be RedisSchema")
-
-        for collection in collections:
-            await self.__redis.set(**vars(collection))
+    async def set(self, *collections: RedisSchema) -> None:
+        for item in collections:
+            await self.__redis.set(item.name, item.value, ex=item.ex)
 
     async def delete(self, *keys: str) -> None:
         await self.__redis.delete(*keys)

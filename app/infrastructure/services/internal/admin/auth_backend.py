@@ -43,7 +43,6 @@ class AdminAuthBackend(AuthenticationBackend):
 
     async def authenticate(self, request: Request) -> bool:
         token = request.session.get("adm_session")
-
-        if not await self.__session.validate(token):
+        if not token:
             return False
-        return True
+        return bool(await self.__session.validate(token))
