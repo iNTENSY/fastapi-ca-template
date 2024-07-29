@@ -17,7 +17,7 @@ class AccountRepositoryImp(IAccountRepository):
 
     async def filter_by(self, **parameters) -> list[Account]:
         statement = select(AccountModel).filter_by(**parameters)
-        result = (await self.__connection.execute(statement)).mappings().all()
+        result = (await self.__connection.execute(statement)).scalars().all()
         return [AccountMapper.generate_to_entity(vars(item)) for item in result]
 
     async def find_all(self, limit: int = 10, offset: int = 0, **parameters) -> list[Account]:

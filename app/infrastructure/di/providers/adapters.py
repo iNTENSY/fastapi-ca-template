@@ -11,7 +11,9 @@ from app.application.interfaces.password_hasher import IPasswordHasher
 from app.application.interfaces.redis import IRedis
 from app.application.interfaces.session import ISessionProcessor
 from app.application.interfaces.timezone import IDateTimeProcessor
+from app.application.interfaces.transaction_manager import ITransactionContextManager
 from app.infrastructure.cache.redis_adapter import RedisAdapter
+from app.infrastructure.persistence.transaction_manager import TransactionContextManagerImp
 from app.infrastructure.services.external.email.core import EmailServiceImp
 from app.infrastructure.services.external.email.settings import EmailSettings
 from app.infrastructure.services.internal.authentication.jwt import JwtProcessor
@@ -42,6 +44,11 @@ class SQLAlchemyProvider(Provider):
     async def provide_session(self, session_maker: async_sessionmaker[AsyncSession]) -> AsyncIterable[AsyncSession]:
         async with session_maker() as session:
             yield session
+
+
+class TransactionManagerProvider(Provider):
+    scope = Scope.REQUEST
+    _manager = provide(TransactionContextManagerImp, provides=ITransactionContextManager)
 
 
 class SettingsProvider(Provider):
