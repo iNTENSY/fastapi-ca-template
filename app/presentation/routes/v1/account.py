@@ -21,7 +21,6 @@ async def find_all_accounts(
     return await interactor(request)
 
 
-
 @router.get("/{uid}", response_model=AccountResponse)
 async def get_account_by_uid(
         request: Annotated[GetAccountRequest, Depends()],

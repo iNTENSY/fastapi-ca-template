@@ -23,7 +23,6 @@ class AdminAuthBackend(AuthenticationBackend):
         self.__repository = account_repository
         self.__pwd_hasher = pwd_hasher
 
-
     async def login(self, request: Request) -> bool:
         form = await request.form()
         username, password = form["username"], form["password"]

@@ -37,7 +37,7 @@ class RegistrationUseCase(Interactor[RegistrationRequest, RegistrationResponse])
             await self.__transaction.commit()
         return RegistrationResponse.create(
             id=entity.id.value,
-            username= entity.username.value,
-            email= entity.email.value,
+            username=entity.username.value,
+            email=entity.email.value,
             is_verified=entity.is_verified.value
         )

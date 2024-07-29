@@ -1,5 +1,5 @@
 import uuid
-from typing import Protocol, Any
+from typing import Protocol
 
 from app.domain.core.value_objects import EmailVO, UuidVO
 
