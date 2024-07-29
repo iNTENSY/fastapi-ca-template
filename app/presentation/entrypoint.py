@@ -1,21 +1,16 @@
-import asyncio
 import os
 from contextlib import asynccontextmanager
 
 import uvicorn
-from dishka import AsyncContainer
-from dishka.integrations.fastapi import setup_dishka
 from dotenv import load_dotenv
 
 from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from sqladmin import Admin
 
 from app.application.interfaces.redis import IRedis
-from app.infrastructure.di.core import ioc_factory, init_ioc
+from app.infrastructure.di.core import init_ioc
 from app.infrastructure.services.internal.admin.core import init_sqladmin
-from app.infrastructure.services.internal.admin.pages import AccountAdmin
 from app.presentation.exc_handlers import init_exc_handlers
 from app.presentation.routes.v1.router import v1_router
 

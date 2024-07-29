@@ -3,12 +3,13 @@ from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter
 from fastapi.responses import Response
 
-from app.application.dtos.authentication.base_responses import LoginResponse, RegistrationResponse
+from app.application.dtos.authentication.base_responses import LoginResponse, RegistrationResponse, LogoutResponse
 from app.application.dtos.authentication.login_request import LoginRequest
 from app.application.dtos.authentication.register_request import RegistrationRequest
 from app.application.interfaces.jwt import IJwtProcessor
 from app.application.use_cases.auth.login import LoginUseCase
 from app.application.use_cases.auth.register import RegistrationUseCase
+
 
 router = APIRouter(prefix="/auth", route_class=DishkaRoute)
 
@@ -32,3 +33,9 @@ async def register(
         interactor: FromDishka[RegistrationUseCase]
 ) -> RegistrationResponse:
     return await interactor(request)
+
+
+@router.get("/logout", response_model=LogoutResponse)
+async def logout(response: Response) -> LogoutResponse:
+    response.delete_cookie(key="access_token")
+    return LogoutResponse(status="Logout successfully")

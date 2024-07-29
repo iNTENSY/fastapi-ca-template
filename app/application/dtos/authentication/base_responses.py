@@ -19,3 +19,8 @@ class RegistrationResponse:
         return RegistrationResponse(
             id=id, username=username, email=email, is_verified=is_verified
         )
+
+
+@dataclass(frozen=True)
+class LogoutResponse:
+    status: str
