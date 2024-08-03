@@ -5,7 +5,7 @@ from app.domain.accounts.exceptions import AccountNotFoundError
 from app.domain.accounts.repository import IAccountRepository
 
 
-class GetAccountUseCase(Interactor[GetAccountRequest, AccountResponse]):
+class GetAccountByUidUseCase(Interactor[GetAccountRequest, AccountResponse]):
     def __init__(self, repository: IAccountRepository) -> None:
         self.__repository = repository
 
