@@ -1,6 +1,7 @@
 import uuid
 from dataclasses import dataclass
 
+from app.domain.accounts.value_objects import UsernameVO
 from app.domain.core.entity import DomainEntity
 from app.domain.core.value_objects import UuidVO, StringVO, EmailVO, BooleanVO
 
@@ -8,7 +9,7 @@ from app.domain.core.value_objects import UuidVO, StringVO, EmailVO, BooleanVO
 @dataclass
 class Account(DomainEntity):
     id: UuidVO
-    username: StringVO
+    username: UsernameVO
     email: EmailVO
     password: StringVO
     is_verified: BooleanVO
@@ -28,7 +29,7 @@ class Account(DomainEntity):
     ) -> "Account":
         return Account(
             id=UuidVO(uuid.uuid4()),
-            username=StringVO(username),
+            username=UsernameVO(username),
             email=EmailVO(email),
             password=StringVO(password),
             is_verified=BooleanVO(is_verified),

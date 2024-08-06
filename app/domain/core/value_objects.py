@@ -14,8 +14,7 @@ class ValueObject(Generic[ValueT]):
     value: ValueT
 
     def __post_init__(self) -> None:
-        pass
-        # self.validate()
+        self.validate()
 
     def validate(self) -> None:
         """
