@@ -1,4 +1,4 @@
-from sqlalchemy import insert, select, update
+from sqlalchemy import insert, select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.accounts.entity import Account
@@ -33,4 +33,8 @@ class AccountRepositoryImp(IAccountRepository):
             .where(AccountModel.id == entity.id.value)
             .values(**AccountMapper.generate_to_dict(entity))
         )
+        await self.__connection.execute(statement)
+
+    async def delete(self, **parameters) -> None:
+        statement = delete(AccountModel).filter_by(**parameters)
         await self.__connection.execute(statement)

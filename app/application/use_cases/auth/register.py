@@ -30,7 +30,7 @@ class RegistrationUseCase(Interactor[RegistrationRequest, RegistrationResponse])
                 email=request.email,
             )
             await self.__repository.create(entity)
-        except IntegrityError:
+        except (IntegrityError, Exception):
             await self.__transaction.rollback()
             raise exceptions.IntegrityError
         finally:

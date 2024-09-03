@@ -66,10 +66,6 @@ class PositiveFloatVO(FloatVO):
 class UuidVO(ValueObject):
     value: uuid.UUID
 
-    def validate(self) -> None:
-        if isinstance(self.value, str) or not isinstance(self.value, uuid.UUID):
-            raise DomainValidationError(message=f"Value ({self.value}) must be of type UUID")
-
 
 @dataclass(frozen=True)
 class BooleanVO(ValueObject):

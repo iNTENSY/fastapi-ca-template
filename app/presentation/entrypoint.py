@@ -30,11 +30,7 @@ async def app_lifespan(app: FastAPI):
     # Bad but ready-to-use implementation.
     # This implementation requires async/await to work with containers from IoC
     await init_sqladmin(app, app.state.dishka_container)
-
-    # Todo: Must init rabbitmq after
     yield
-
-    # RMQ must be closed there
     await redis_adapter.close()
 
 

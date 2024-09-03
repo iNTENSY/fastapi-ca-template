@@ -10,7 +10,7 @@ class RedisSettings:
 
     @staticmethod
     def from_env(encoding: str = "utf-8", decode_responses: bool = False) -> "RedisSettings":
-        url = os.getenv("REDIS_URL")
+        url = os.environ.get("REDIS_URL")
 
         if not url:
             raise RuntimeError("Missing REDIS_URL environment variable")
