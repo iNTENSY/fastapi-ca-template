@@ -2,7 +2,7 @@ from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 
 from app.application.interfaces.password_hasher import IPasswordHasher
-from app.application.interfaces.redis import IRedis
+from app.application.interfaces.redis import ICache
 from app.application.interfaces.session import ISessionProcessor
 from app.domain.accounts.exceptions import AccountNotFoundError, InvalidAccountDataError
 from app.domain.accounts.repository import IAccountRepository
@@ -12,7 +12,7 @@ class AdminAuthBackend(AuthenticationBackend):
     def __init__(
             self,
             secret_key: str,
-            redis: IRedis,
+            redis: ICache,
             session: ISessionProcessor,
             account_repository: IAccountRepository,
             pwd_hasher: IPasswordHasher

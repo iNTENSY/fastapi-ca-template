@@ -3,7 +3,7 @@ from typing import Protocol, Any
 from app.infrastructure.cache.schema import RedisSchema
 
 
-class IRedis(Protocol):
+class ICache(Protocol):
     async def get(self, key: Any) -> bytes: ...
 
     async def set(self, *collections: RedisSchema) -> None: ...

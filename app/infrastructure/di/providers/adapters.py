@@ -8,12 +8,12 @@ from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engin
 from app.application.interfaces.email import IEmailService
 from app.application.interfaces.jwt import IJwtProcessor
 from app.application.interfaces.password_hasher import IPasswordHasher
-from app.application.interfaces.redis import IRedis
+from app.application.interfaces.redis import ICache
 from app.application.interfaces.session import ISessionProcessor
 from app.application.interfaces.timezone import IDateTimeProcessor
 from app.application.interfaces.transaction_manager import ITransactionContextManager
 from app.infrastructure.cache.redis_adapter import RedisAdapter
-from app.infrastructure.persistence.transaction_manager import TransactionContextManagerImp
+from app.infrastructure.persistence.transaction_manager import PostgreSQLTransactionContextManagerImp
 from app.infrastructure.services.external.email.core import EmailServiceImp
 from app.infrastructure.services.external.email.settings import EmailSettings
 from app.infrastructure.services.internal.authentication.jwt import JwtProcessor
@@ -48,7 +48,7 @@ class SQLAlchemyProvider(Provider):
 
 class TransactionManagerProvider(Provider):
     scope = Scope.REQUEST
-    _manager = provide(TransactionContextManagerImp, provides=ITransactionContextManager)
+    _manager = provide(PostgreSQLTransactionContextManagerImp, provides=ITransactionContextManager)
 
 
 class SettingsProvider(Provider):
@@ -80,15 +80,15 @@ class RedisProvider(Provider):
     def provide_settings(self) -> RedisSettings:
         return RedisSettings.from_env(decode_responses=True)
 
-    @provide(scope=Scope.APP, provides=IRedis)
-    async def provide_redis(self, settings: RedisSettings) -> IRedis:
+    @provide(scope=Scope.APP, provides=ICache)
+    async def provide_redis(self, settings: RedisSettings) -> ICache:
         aior = aioredis.from_url(settings.url, encoding=settings.encoding, decode_responses=settings.decode_responses)
         return RedisAdapter(aior)
 
 
 class SessionProvider(Provider):
     @provide(scope=Scope.APP, provides=ISessionProcessor)
-    async def provide_session(self, redis: IRedis, settings: SessionSettings) -> ISessionProcessor:
+    async def provide_session(self, redis: ICache, settings: SessionSettings) -> ISessionProcessor:
         return SessionProcessorImp(redis, settings)
 
 

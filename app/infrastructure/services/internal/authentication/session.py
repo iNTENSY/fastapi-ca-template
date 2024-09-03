@@ -2,7 +2,7 @@ import random
 import string
 import uuid
 
-from app.application.interfaces.redis import IRedis
+from app.application.interfaces.redis import ICache
 from app.application.interfaces.session import ISessionProcessor
 from app.domain.accounts.exceptions import UserIsNotAuthorizedError
 from app.infrastructure.cache.schema import RedisSchema
@@ -10,7 +10,7 @@ from app.infrastructure.settings.session import SessionSettings
 
 
 class SessionProcessorImp(ISessionProcessor):
-    def __init__(self, redis: IRedis, settings: SessionSettings):
+    def __init__(self, redis: ICache, settings: SessionSettings):
         self.__redis = redis
         self.__settings = settings
 

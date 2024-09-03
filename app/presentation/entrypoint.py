@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
-from app.application.interfaces.redis import IRedis
+from app.application.interfaces.redis import ICache
 from app.infrastructure.di.core import init_ioc
 from app.infrastructure.services.internal.admin.core import init_sqladmin
 from app.presentation.exc_handlers import init_exc_handlers
@@ -21,7 +21,7 @@ load_dotenv("../../.env")
 @asynccontextmanager
 async def app_lifespan(app: FastAPI):
     async with app.state.dishka_container() as app_container:
-        redis_adapter = await app_container.get(IRedis)
+        redis_adapter = await app_container.get(ICache)
         if not await redis_adapter.redis.ping():
             raise RuntimeError("Cant connect to redis. Application stopped")
 

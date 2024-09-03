@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.application.interfaces.transaction_manager import ITransactionContextManager
 
 
-class TransactionContextManagerImp(ITransactionContextManager):
+class PostgreSQLTransactionContextManagerImp(ITransactionContextManager):
     __slots__ = ("connection",)
 
     def __init__(self, connection: AsyncSession) -> None:
