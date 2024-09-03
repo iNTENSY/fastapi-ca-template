@@ -1,6 +1,7 @@
 import os
 from typing import AsyncIterable
 
+from dotenv import load_dotenv
 from redis import asyncio as aioredis
 from dishka import Provider, provide, Scope
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker
@@ -30,7 +31,8 @@ from app.infrastructure.settings.session import SessionSettings
 class SQLAlchemyProvider(Provider):
     @provide(scope=Scope.APP, provides=DatabaseSettings)
     def provide_settings(self) -> DatabaseSettings:
-        return DatabaseSettings.from_env()
+        url = os.environ.get('DATABASE_URL')
+        return DatabaseSettings.from_env(url)
 
     @provide(scope=Scope.APP, provides=AsyncEngine)
     def provide_engine(self, settings: DatabaseSettings) -> AsyncEngine:
@@ -78,7 +80,8 @@ class SettingsProvider(Provider):
 class RedisProvider(Provider):
     @provide(scope=Scope.APP, provides=RedisSettings)
     def provide_settings(self) -> RedisSettings:
-        return RedisSettings.from_env(decode_responses=True)
+        url = os.environ.get("REDIS_URL")
+        return RedisSettings.from_env(url=url, decode_responses=True)
 
     @provide(scope=Scope.APP, provides=ICache)
     async def provide_redis(self, settings: RedisSettings) -> ICache:

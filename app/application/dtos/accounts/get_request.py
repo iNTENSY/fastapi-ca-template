@@ -9,5 +9,5 @@ class GetAccountRequest:
 
 @dataclass(frozen=True)
 class GetAccountsRequest:
-    limit: int
-    offset: int
+    limit: int = 10
+    offset: int = 0
