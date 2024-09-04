@@ -24,3 +24,12 @@ class RegistrationResponse:
 @dataclass(frozen=True)
 class LogoutResponse:
     status: str
+
+
+@dataclass(frozen=True)
+class ActivationResponse:
+    message: str
+
+    @staticmethod
+    def create(message: str) -> "ActivationResponse":
+        return ActivationResponse(message)

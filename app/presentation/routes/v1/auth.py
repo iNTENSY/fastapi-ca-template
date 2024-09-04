@@ -1,12 +1,17 @@
+from typing import Annotated
+
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import Response
 
-from app.application.dtos.authentication.base_responses import LoginResponse, RegistrationResponse, LogoutResponse
+from app.application.dtos.authentication.activation_request import ActivationRequest
+from app.application.dtos.authentication.base_responses import LoginResponse, RegistrationResponse, LogoutResponse, \
+    ActivationResponse
 from app.application.dtos.authentication.login_request import LoginRequest
 from app.application.dtos.authentication.register_request import RegistrationRequest
 from app.application.interfaces.jwt import IJwtProcessor
+from app.application.use_cases.auth.activation import ActivationUseCase
 from app.application.use_cases.auth.login import LoginUseCase
 from app.application.use_cases.auth.register import RegistrationUseCase
 
@@ -39,3 +44,11 @@ async def register(
 async def logout(response: Response) -> LogoutResponse:
     response.delete_cookie(key="access_token")
     return LogoutResponse(status="Logout successfully")
+
+
+@router.get("/activate", response_model=ActivationResponse)
+async def activate(
+        request: Annotated[ActivationRequest, Depends()],
+        interactor: FromDishka[ActivationUseCase]
+) -> ActivationResponse:
+    return await interactor(request)
