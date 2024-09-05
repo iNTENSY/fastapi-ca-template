@@ -5,6 +5,7 @@ from app.application.interfaces.redis import ICache
 from app.application.interfaces.transaction_manager import ITransactionContextManager
 from app.domain.accounts.exceptions import ActivationError, AccountNotFoundError
 from app.domain.accounts.repository import IAccountRepository
+from app.domain.core.value_objects import BooleanVO
 
 
 class ActivationUseCase(Interactor[ActivationRequest, ActivationResponse]):
@@ -19,7 +20,7 @@ class ActivationUseCase(Interactor[ActivationRequest, ActivationResponse]):
         self.__transaction = transaction_manager
 
     async def __call__(self, request: ActivationRequest) -> ActivationResponse:
-        expected_code = await self.__cache.get(f"phone-{request.email}")
+        expected_code = await self.__cache.get(f"activation-{request.email}")
         if not expected_code:
             raise ActivationError("Запроса на активацию аккаунта не поступало, либо время истекло.")
         if int(expected_code) != request.code:
@@ -30,11 +31,11 @@ class ActivationUseCase(Interactor[ActivationRequest, ActivationResponse]):
         except Exception as e:
             raise AccountNotFoundError
 
-        if entity.is_verified:
+        if entity.is_verified.value:
             raise ActivationError("Аккаунт уже активирован")
 
-        await self.__cache.delete(f"phone-{request.email}")
-        entity.verified = True
+        await self.__cache.delete(f"activation-{request.email}")
+        entity.is_verified = BooleanVO(value=True)
         await self.__repository.update(entity)
         await self.__transaction.commit()
         return ActivationResponse.create("Аккаунт успешно активирован")

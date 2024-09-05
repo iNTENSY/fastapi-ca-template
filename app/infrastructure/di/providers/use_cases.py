@@ -3,6 +3,7 @@ from dishka import Provider, provide, Scope
 from app.application.use_cases.accounts.all import GetAccountsUseCase
 from app.application.use_cases.accounts.delete import DeleteAccountUseCase
 from app.application.use_cases.accounts.get import GetAccountByUidUseCase
+from app.application.use_cases.auth.activation import ActivationUseCase
 from app.application.use_cases.auth.login import LoginUseCase
 from app.application.use_cases.auth.register import RegistrationUseCase
 from app.domain.accounts.repository import IAccountRepository
@@ -24,3 +25,4 @@ class UseCasesProvider(Provider):
 
     _auth_login = provide(LoginUseCase)
     _auth_register = provide(RegistrationUseCase)
+    _auth_activate = provide(ActivationUseCase)

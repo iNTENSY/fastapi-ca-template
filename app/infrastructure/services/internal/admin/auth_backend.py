@@ -4,7 +4,8 @@ from starlette.requests import Request
 from app.application.interfaces.password_hasher import IPasswordHasher
 from app.application.interfaces.redis import ICache
 from app.application.interfaces.session import ISessionProcessor
-from app.domain.accounts.exceptions import AccountNotFoundError, InvalidAccountDataError, UserBadPermissionError
+from app.domain.accounts.exceptions import AccountNotFoundError, InvalidAccountDataError, UserBadPermissionError, \
+    UserIsNotAuthorizedError
 from app.domain.accounts.repository import IAccountRepository
 
 
@@ -49,4 +50,7 @@ class AdminAuthBackend(AuthenticationBackend):
         token = request.session.get("adm_session")
         if not token:
             return False
-        return bool(await self.__session.validate(token))
+        try:
+            return bool(await self.__session.validate(token))
+        except (UserIsNotAuthorizedError, Exception):
+            return False

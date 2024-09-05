@@ -25,6 +25,7 @@ from app.infrastructure.services.internal.authentication.jwt import JwtProcessor
 from app.infrastructure.services.internal.authentication.session import SessionProcessorImp
 from app.infrastructure.services.internal.datetimes.timezone import SystemDateTimeProvider, Timezone
 from app.infrastructure.services.internal.security.password_hasher import PasswordHasherImp
+from app.infrastructure.services.internal.security.password_validator import PasswordValidator
 from app.infrastructure.settings.core import Settings
 from app.infrastructure.settings.database import DatabaseSettings
 from app.infrastructure.settings.jwt import JwtSettings
@@ -73,7 +74,8 @@ class SettingsProvider(Provider):
     @provide(scope=Scope.APP, provides=Settings)
     def provide_project_settings(self) -> Settings:
         secret_key = os.environ.get("SECRET_KEY")
-        return Settings.create(secret_key)
+        activation_code_lifetime = int(os.environ.get("ACTIVATION_CODE_LIFETIME"))
+        return Settings.create(secret_key, activation_code_lifetime)
 
 
 class RedisProvider(Provider):
@@ -96,7 +98,8 @@ class SessionProvider(Provider):
 
 class SecurityHasher(Provider):
     scope = Scope.APP
-    _app = provide(PasswordHasherImp, provides=IPasswordHasher)
+    _pwd_hasher = provide(PasswordHasherImp, provides=IPasswordHasher)
+    _pwd_validator = provide(PasswordValidator)
 
 
 class TimezoneProvider(Provider):
@@ -120,7 +123,7 @@ class EmailProvider(Provider):
         password = os.environ.get("EMAIL_PASSWORD")
         return EmailSettings.create(host, int(port), login, password)
 
-    @provide(scope=Scope.REQUEST, provides=IEmailService)
+    @provide(scope=Scope.APP, provides=IEmailService)
     async def provide_service(self, settings: EmailSettings) -> IEmailService:
         return EmailServiceImp(settings)
 

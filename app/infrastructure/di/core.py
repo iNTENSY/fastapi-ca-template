@@ -26,8 +26,8 @@ def ioc_factory() -> AsyncContainer:
         RepositoriesProvider(),
         UseCasesProvider(),
 
-        # Services
-        EmailProvider()
+        # Services and other
+        EmailProvider(),
     )
 
 

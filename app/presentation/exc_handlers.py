@@ -5,7 +5,7 @@ from starlette.responses import JSONResponse
 
 from app.domain.accounts.exceptions import AccountNotFoundError, UserIsNotAuthorizedError, InvalidTokenError, \
     ValidationAPIError, UserBadPermissionError
-from app.domain.core.exceptions import DomainValidationError, InternalServerError
+from app.domain.core.exceptions import DomainValidationError, InternalServerError, IntegrityError
 
 
 async def validation_error_exc_handler(request: Request, exc: DomainValidationError) -> JSONResponse:
@@ -36,6 +36,10 @@ async def bad_permission_error_exc_handler(request: Request, exc: UserBadPermiss
     return JSONResponse(content={"detail": exc.message}, status_code=status.HTTP_403_FORBIDDEN)
 
 
+async def integrity_error_exc_handler(request: Request, exc: IntegrityError):
+    return JSONResponse(content={"detail": exc.message}, status_code=status.BAD_REQUEST)
+
+
 def init_exc_handlers(app: FastAPI):
     app.add_exception_handler(DomainValidationError, validation_error_exc_handler)
     app.add_exception_handler(InternalServerError, internal_server_error_exc_handler)
@@ -44,3 +48,4 @@ def init_exc_handlers(app: FastAPI):
     app.add_exception_handler(InvalidTokenError, invalid_token_error_exc_handler)
     app.add_exception_handler(ValidationAPIError, pwd_validation_error_exc_handler)
     app.add_exception_handler(UserBadPermissionError, bad_permission_error_exc_handler)
+    app.add_exception_handler(IntegrityError, integrity_error_exc_handler)

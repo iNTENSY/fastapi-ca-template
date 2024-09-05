@@ -39,3 +39,8 @@ class InvalidTokenPayloadError(DomainError):
 class ActivationError(DomainError):
     def __init__(self, message: str):
         super().__init__(message=message)
+
+
+class ValidationAPIError(DomainError):
+    def __init__(self, message: str):
+        super().__init__(message=message)

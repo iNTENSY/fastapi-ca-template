@@ -8,6 +8,7 @@ class AccountAdmin(ModelView, model=AccountModel):
     column_list = [
         AccountModel.id,
         AccountModel.username,
+        AccountModel.is_verified,
         AccountModel.is_active,
         AccountModel.is_staff,
         AccountModel.is_superuser
