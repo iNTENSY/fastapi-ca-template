@@ -1,4 +1,4 @@
-from typing import Generic, Protocol, TypeVar
+from typing import Generic, TypeVar
 
 
 Request = TypeVar("Request", contravariant=True)

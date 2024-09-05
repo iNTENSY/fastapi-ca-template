@@ -28,7 +28,7 @@ class ActivationUseCase(Interactor[ActivationRequest, ActivationResponse]):
 
         try:
             entity = (await self.__repository.filter_by(email=request.email))[0]
-        except Exception as e:
+        except Exception:
             raise AccountNotFoundError
 
         if entity.is_verified.value:

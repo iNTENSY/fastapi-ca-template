@@ -1,4 +1,3 @@
-import smtplib
 from email.message import EmailMessage
 from email.mime.text import MIMEText
 

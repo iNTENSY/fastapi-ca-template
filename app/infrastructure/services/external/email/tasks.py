@@ -1,6 +1,5 @@
 import smtplib
-from email.message import EmailMessage
-from email.mime.text import MIMEText
+
 from typing import Any
 
 from app.infrastructure.background_tasks.celery import app

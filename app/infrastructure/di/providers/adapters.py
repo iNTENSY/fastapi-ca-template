@@ -2,7 +2,6 @@ import logging
 import os
 from typing import AsyncIterable
 
-from dotenv import load_dotenv
 from redis import asyncio as aioredis
 from dishka import Provider, provide, Scope
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engine, async_sessionmaker

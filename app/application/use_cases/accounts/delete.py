@@ -1,7 +1,6 @@
 from app.application.dtos.accounts.delete_request import DeleteAccountRequest
 from app.application.interfaces.interactor import Interactor
 from app.application.interfaces.transaction_manager import ITransactionContextManager
-from app.domain.accounts.exceptions import AccountNotFoundError
 from app.domain.accounts.repository import IAccountRepository
 
 

@@ -1,8 +1,5 @@
-import os
-
 from dishka import AsyncContainer, make_async_container
 from dishka.integrations.fastapi import setup_dishka
-from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from app.infrastructure.di.providers.adapters import SQLAlchemyProvider, SettingsProvider, RedisProvider, \
