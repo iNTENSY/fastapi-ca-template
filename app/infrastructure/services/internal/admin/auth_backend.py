@@ -4,7 +4,7 @@ from starlette.requests import Request
 from app.application.interfaces.password_hasher import IPasswordHasher
 from app.application.interfaces.redis import ICache
 from app.application.interfaces.session import ISessionProcessor
-from app.domain.accounts.exceptions import AccountNotFoundError, InvalidAccountDataError
+from app.domain.accounts.exceptions import AccountNotFoundError, InvalidAccountDataError, UserBadPermissionError
 from app.domain.accounts.repository import IAccountRepository
 
 
@@ -29,11 +29,15 @@ class AdminAuthBackend(AuthenticationBackend):
 
         expected_account = await self.__repository.filter_by(username=username)
         if not expected_account:
-            raise AccountNotFoundError
-        if not self.__pwd_hasher.verify_password(password, expected_account[0].password.value):
-            raise InvalidAccountDataError
+            return False
 
-        session = await self.__session.generate_session(expected_account[0].id.value)
+        account = expected_account[0]
+        if not self.__pwd_hasher.verify_password(password, account.password.value):
+            return False
+        if not account.is_superuser.value:
+            return False
+
+        session = await self.__session.generate_session(account.id.value)
         request.session.update({"adm_session": session})
         return True
 
