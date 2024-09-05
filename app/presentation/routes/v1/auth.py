@@ -9,10 +9,12 @@ from app.application.dtos.authentication.activation_request import ActivationReq
 from app.application.dtos.authentication.base_responses import LoginResponse, RegistrationResponse, LogoutResponse, \
     ActivationResponse
 from app.application.dtos.authentication.login_request import LoginRequest
+from app.application.dtos.authentication.reactivation_request import ReactivationRequest
 from app.application.dtos.authentication.register_request import RegistrationRequest
 from app.application.interfaces.jwt import IJwtProcessor
 from app.application.use_cases.auth.activation import ActivationUseCase
 from app.application.use_cases.auth.login import LoginUseCase
+from app.application.use_cases.auth.reactivation import ReactivationUseCase
 from app.application.use_cases.auth.register import RegistrationUseCase
 
 
@@ -50,5 +52,13 @@ async def logout(response: Response) -> LogoutResponse:
 async def activate(
         request: Annotated[ActivationRequest, Depends()],
         interactor: FromDishka[ActivationUseCase]
+) -> ActivationResponse:
+    return await interactor(request)
+
+
+@router.get("/reactivate", response_model=ActivationResponse)
+async def reactivate(
+        request: Annotated[ReactivationRequest, Depends()],
+        interactor: FromDishka[ReactivationUseCase]
 ) -> ActivationResponse:
     return await interactor(request)

@@ -5,6 +5,7 @@ from app.application.use_cases.accounts.delete import DeleteAccountUseCase
 from app.application.use_cases.accounts.get import GetAccountByUidUseCase
 from app.application.use_cases.auth.activation import ActivationUseCase
 from app.application.use_cases.auth.login import LoginUseCase
+from app.application.use_cases.auth.reactivation import ReactivationUseCase
 from app.application.use_cases.auth.register import RegistrationUseCase
 from app.domain.accounts.repository import IAccountRepository
 from app.infrastructure.persistence.repositories.account import AccountRepositoryImp
@@ -26,3 +27,4 @@ class UseCasesProvider(Provider):
     _auth_login = provide(LoginUseCase)
     _auth_register = provide(RegistrationUseCase)
     _auth_activate = provide(ActivationUseCase)
+    _auth_reactivate = provide(ReactivationUseCase)
