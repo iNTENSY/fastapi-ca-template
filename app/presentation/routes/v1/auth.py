@@ -16,7 +16,7 @@ from app.application.use_cases.auth.activation import ActivationUseCase
 from app.application.use_cases.auth.login import LoginUseCase
 from app.application.use_cases.auth.reactivation import ReactivationUseCase
 from app.application.use_cases.auth.register import RegistrationUseCase
-
+from app.infrastructure.services.internal.limiter.core import limiter
 
 router = APIRouter(prefix="/auth", route_class=DishkaRoute)
 
@@ -57,6 +57,7 @@ async def activate(
 
 
 @router.get("/reactivate", response_model=ActivationResponse)
+@limiter.limit("3/hour")
 async def reactivate(
         request: Annotated[ReactivationRequest, Depends()],
         interactor: FromDishka[ReactivationUseCase]

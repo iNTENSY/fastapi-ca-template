@@ -7,10 +7,13 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.application.interfaces.redis import ICache
 from app.infrastructure.di.core import init_ioc
 from app.infrastructure.services.internal.admin.core import init_sqladmin
+from app.infrastructure.services.internal.limiter.core import init_limiter
 from app.presentation.exc_handlers import init_exc_handlers
 from app.presentation.routes.v1.router import v1_router
 
@@ -44,6 +47,7 @@ def app_factory() -> FastAPI:
     app = FastAPI(debug=bool(os.environ.get("DEBUG")), lifespan=app_lifespan)
 
     init_ioc(app)
+    init_limiter(app)
     init_routes(app)
     init_exc_handlers(app)
     return app
