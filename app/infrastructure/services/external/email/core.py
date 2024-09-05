@@ -1,4 +1,5 @@
 import smtplib
+from email.message import EmailMessage
 from email.mime.text import MIMEText
 
 from app.application.interfaces.email import IEmailService
@@ -9,8 +10,9 @@ class EmailServiceImp(IEmailService):
     def __init__(self, conf: EmailSettings):
         self.__conf = conf
 
-    def send_email(self, to: str, subject: str, body: str):
-        message = self.__generate_message(to, subject, body)
+    def send_email(self, to: str, subject: str, body: str, message: EmailMessage = None):
+        if message is None:
+            message = self.__generate_message(to, subject, body)
         with smtplib.SMTP(self.__conf.host, self.__conf.port) as server:
             server.starttls()
             server.login(self.__conf.login, self.__conf.password)

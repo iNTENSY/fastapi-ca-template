@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import AsyncIterable
 
@@ -8,12 +9,15 @@ from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, create_async_engin
 
 from app.application.interfaces.email import IEmailService
 from app.application.interfaces.jwt import IJwtProcessor
+from app.application.interfaces.logger import ILogger
 from app.application.interfaces.password_hasher import IPasswordHasher
 from app.application.interfaces.redis import ICache
 from app.application.interfaces.session import ISessionProcessor
 from app.application.interfaces.timezone import IDateTimeProcessor
 from app.application.interfaces.transaction_manager import ITransactionContextManager
 from app.infrastructure.cache.redis_adapter import RedisAdapter
+from app.infrastructure.logger.config import LoggerSettings
+from app.infrastructure.logger.logger import LoggerImp
 from app.infrastructure.persistence.transaction_manager import PostgreSQLTransactionContextManagerImp
 from app.infrastructure.services.external.email.core import EmailServiceImp
 from app.infrastructure.services.external.email.settings import EmailSettings
@@ -67,14 +71,9 @@ class SettingsProvider(Provider):
         return JwtSettings.create(secret=secret_key, expires_in=expires_in, algorithm=algorithm)
 
     @provide(scope=Scope.APP, provides=Settings)
-    def provide_project_settings(
-            self,
-            db: DatabaseSettings,
-            session: SessionSettings,
-            jwt: JwtSettings
-    ) -> Settings:
+    def provide_project_settings(self) -> Settings:
         secret_key = os.environ.get("SECRET_KEY")
-        return Settings.create(secret_key, db=db, session=session, jwt=jwt)
+        return Settings.create(secret_key)
 
 
 class RedisProvider(Provider):
@@ -124,3 +123,16 @@ class EmailProvider(Provider):
     @provide(scope=Scope.REQUEST, provides=IEmailService)
     async def provide_service(self, settings: EmailSettings) -> IEmailService:
         return EmailServiceImp(settings)
+
+
+class LoggerProvider(Provider):
+    @provide(scope=Scope.APP, provides=LoggerSettings)
+    def provide_settings(self) -> LoggerSettings:
+        level = logging.INFO
+        name = "service-logger"
+        filename = "logs.txt"
+        return LoggerSettings.create(level=level, name=name, filename=filename)
+
+    @provide(scope=Scope.APP, provides=ILogger)
+    def provide_logger(self, settings: LoggerSettings) -> ILogger:
+        return LoggerImp(settings)
