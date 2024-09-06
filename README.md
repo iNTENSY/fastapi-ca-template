@@ -31,6 +31,40 @@ ___
 7. Примените миграции: `sudo docker compose exec backend alembic upgrade head`
 8. Сайт доступен по данному url: http://localhost:8001/docs
 
+### Комментарии автора
+___
+Данный шаблон не является панацеей для всех проектов на FastAPI, но он демонстрирует
+реализацию Чистой Архитектуры (Clean Arch.) предоставленным Робертом Мартином в своей одноименной книге.
+
+Проект строится на IoC-контейнере в связке с DI-фреймворком (dishka) и именно поэтому,
+если вы хотите добавить или удалить какую-то составляющую проекта, убедитесь, что вы
+правильно реализовали поведение самого контейнера (./app/infrastructure/di/).
+
+Для запуска тестов используется команда `pytest` с настройками тестовой среды (pytest.ini).
+Убедитесь что все указанные парамеры присутствуют.
+
+Интегрированные технологии в проекте: 
+- JWT (cookie with HTTPOnly), Session Auth
+- SQLAdmin
+- Email
+- Background tasks (Celery + Redis)
+- Rate limiter (slowapi)
+- Cache (fastapi-cache2 + Redis)
+- Logger (logging)
+
+Используемые шаблоны и паттерны проектирования:
+- IoC-контейнеры
+- Dependency Injection
+- Repository
+- Value Objects
+- Domain Model
+- Mappers
+- Adapters
+- Data Transfer Objects
+- Transaction Manager
+- Factory
+
+
 ### Контакты:
 ___
 
