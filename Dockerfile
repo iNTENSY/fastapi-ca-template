@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["gunicorn", "app.presentation.entrypoint:app_factory", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
+CMD ["uvicorn", "app.presentation.entrypoint:app_factory", "--host", "0.0.0.0", "--port", "8000"]

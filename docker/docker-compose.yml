@@ -1,0 +1,42 @@
+volumes:
+  pd_data:
+
+
+services:
+  db:
+    image: postgres:latest
+    env_file: ./.env
+    volumes:
+      - pd_data:/var/lib/postgresql/data/
+    restart: always
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ../.
+    env_file: ./.env
+    restart: always
+    depends_on:
+      - db
+
+  celery_worker:
+    build: ../.
+    env_file: ./.env
+    restart: always
+    command: celery -A app.infrastructure.background_tasks worker -l INFO --pool solo
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8001:80"
+    restart: always
+    depends_on:
+      - backend
+      - celery_worker

@@ -19,6 +19,18 @@ ___
 - Фреймворк для внедрения зависимостей: Dishka
 - Библиотека для тестирования: pytest
 
+### Запуск проекта используя контейнеризацию (Docker system)
+___
+1. Клонируйте репозиторий: `https://github.com/iNTENSY/fastapi-ca-template.git`
+2. Запустите Docker в вашей системе: `sudo systemctl start docker`
+3. Установите файл с переменными окружения (`.env`) в каталоге `./doker`. <br>
+Для примера используемых переменных окружения обратитесь в файл `.env.production.example`
+4. Перейдите в каталог с конфигурационными файлами docker-compose и nginx: `cd ./docker`
+5. Соберите контейнеры и запустите их с параметром -d: `sudo docker compose up --build`
+6. Проверьте миграции внутри контейнера: `sudo docker compose exec backend alembic revision --autogenerate`
+7. Примените миграции: `sudo docker compose exec backend alembic upgrade head`
+8. Сайт доступен по данному url: http://localhost:8001/docs
+
 ### Контакты:
 ___
 

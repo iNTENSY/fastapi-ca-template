@@ -80,7 +80,9 @@ class SettingsProvider(Provider):
 class RedisProvider(Provider):
     @provide(scope=Scope.APP, provides=RedisSettings)
     def provide_settings(self) -> RedisSettings:
-        url = os.environ.get("REDIS_URL")
+        host = os.environ.get("REDIS_HOST")
+        port = os.environ.get("REDIS_PORT")
+        url = f"redis://{host}:{port}/"
         return RedisSettings.from_env(url=url, decode_responses=True)
 
     @provide(scope=Scope.APP, provides=ICache)
