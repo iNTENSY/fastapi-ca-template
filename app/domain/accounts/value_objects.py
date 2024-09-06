@@ -12,5 +12,5 @@ class UsernameVO(StringVO):
         if not self.value.isalpha():
             raise DomainValidationError("Username must have only alphabet letters.")
 
-        if len(self.value) < 7:
-            raise DomainValidationError("Username must be grater then 7 chars.")
+        if len(self.value) < 4:
+            raise DomainValidationError("Username must be grater then 4 chars.")
