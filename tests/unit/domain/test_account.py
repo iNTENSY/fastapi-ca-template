@@ -64,5 +64,6 @@ class Test02AccountBaseAction:
         }
 
         account.update(**data_for_update)
+        data_for_update["id"] = account.id.value
 
         self.check_expected_entity_fields(account, data_for_update)
