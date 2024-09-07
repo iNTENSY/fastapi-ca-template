@@ -37,7 +37,7 @@ async def bad_permission_error_exc_handler(request: Request, exc: UserBadPermiss
 
 
 async def integrity_error_exc_handler(request: Request, exc: IntegrityError):
-    return JSONResponse(content={"detail": exc.message}, status_code=status.BAD_REQUEST)
+    return JSONResponse(content={"detail": exc.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
 def init_exc_handlers(app: FastAPI):

@@ -8,11 +8,13 @@ from starlette.requests import Request
 from app.application.dtos.accounts.base_responses import AccountResponse, AccountsResponse
 from app.application.dtos.accounts.delete_request import DeleteAccountRequest
 from app.application.dtos.accounts.get_request import GetAccountRequest, GetAccountsRequest
+from app.application.dtos.accounts.update_request import UpdateRequest
 from app.application.interfaces.jwt import IJwtProcessor
 from app.application.use_cases.accounts.all import GetAccountsUseCase
 from app.application.use_cases.accounts.delete import DeleteAccountUseCase
 from app.application.use_cases.accounts.get import GetAccountByUidUseCase
-from app.domain.accounts.exceptions import InvalidTokenError
+from app.application.use_cases.accounts.update import UpdateAccountUseCase
+from app.domain.accounts.exceptions import InvalidTokenError, UserBadPermissionError
 from app.infrastructure.services.internal.authentication.oauth2 import auth_required
 
 router = APIRouter(prefix="/accounts", route_class=DishkaRoute)
@@ -61,3 +63,19 @@ async def delete_account_by_uid(
     uid = payload[0].value
     await interactor(DeleteAccountRequest(uid=uid))
     return {"uid": uid}
+
+
+@router.patch("/", dependencies=[Depends(auth_required)])
+async def update_account(
+        request: Request,
+        schema: UpdateRequest,
+        interactor: FromDishka[UpdateAccountUseCase],
+        jwt_processor: FromDishka[IJwtProcessor]
+) -> AccountResponse:
+    token = request.scope["auth_token"]
+    payload = jwt_processor.parse(token)
+    if payload is None:
+        raise InvalidTokenError
+    if str(payload[0].value) != str(schema.uid):
+        raise UserBadPermissionError
+    return await interactor(schema)
