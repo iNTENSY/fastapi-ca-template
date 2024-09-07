@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from app.domain.accounts.value_objects import UsernameVO
 from app.domain.core.entity import DomainEntity
-from app.domain.core.value_objects import UuidVO, StringVO, EmailVO, BooleanVO
+from app.domain.core.value_objects import UuidVO, StringVO, EmailVO, BooleanVO, ValueObject
 
 
 @dataclass
@@ -37,3 +37,14 @@ class Account(DomainEntity):
             is_staff=BooleanVO(is_staff),
             is_superuser=BooleanVO(is_superuser),
         )
+
+    def update(self, **kwargs) -> "Account":
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                attribute: ValueObject = getattr(self, key)
+                value_object_type = attribute.__class__
+            else:
+                continue
+            setattr(self, key, value_object_type(value))
+        return self
+
