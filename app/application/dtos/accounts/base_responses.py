@@ -36,3 +36,12 @@ class AccountsResponse:
             items=[AccountResponse.create(account) for account in accounts],
             count=len(accounts)
         )
+
+
+@dataclass(frozen=True)
+class BaseAccountsResponse:
+    message: str
+
+    @staticmethod
+    def create(message: str) -> "BaseAccountsResponse":
+        return BaseAccountsResponse(message)
