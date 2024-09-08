@@ -20,6 +20,7 @@ from app.application.use_cases.accounts.reset_password import ResetPasswordUseCa
 from app.application.use_cases.accounts.update import UpdateAccountUseCase
 from app.domain.accounts.exceptions import InvalidTokenError, UserBadPermissionError
 from app.infrastructure.services.internal.authentication.oauth2 import auth_required
+from app.infrastructure.services.internal.limiter.core import limiter
 
 router = APIRouter(prefix="/accounts", route_class=DishkaRoute)
 
@@ -86,6 +87,7 @@ async def update_account(
 
 
 @router.post("/forgot-password", status_code=status.HTTP_200_OK)
+@limiter.limit("3/hour")
 async def forgot_password(
         request: ForgotPasswordRequest,
         interactor: FromDishka[ForgotPasswordUseCase]

@@ -42,8 +42,10 @@ class ResetPasswordUseCase(Interactor[ResetPasswordRequest, BaseAccountsResponse
 
         if not cached_code:
             raise CacheError("Запроса на смену пароля не поступало")
-        if cached_code != code:
+        if str(cached_code) != str(code):
             raise UserBadPermissionError
+
+        await self.__cache.delete(key)
 
     async def __update(self, entity: Account, password: str) -> Account:
         hashed_password = self.__pwd_hasher.hash_password(password)
