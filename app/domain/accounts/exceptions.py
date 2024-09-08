@@ -36,6 +36,11 @@ class InvalidTokenPayloadError(DomainError):
         super().__init__(message="Token is not trusted")
 
 
+class CacheError(DomainError):
+    def __init__(self, message: str):
+        super().__init__(message)
+
+
 class ActivationError(DomainError):
     def __init__(self, message: str):
         super().__init__(message=message)

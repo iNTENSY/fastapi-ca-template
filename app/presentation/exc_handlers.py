@@ -4,7 +4,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from app.domain.accounts.exceptions import AccountNotFoundError, UserIsNotAuthorizedError, InvalidTokenError, \
-    ValidationAPIError, UserBadPermissionError
+    ValidationAPIError, UserBadPermissionError, CacheError, ActivationError
 from app.domain.core.exceptions import DomainValidationError, InternalServerError, IntegrityError
 
 
@@ -40,6 +40,14 @@ async def integrity_error_exc_handler(request: Request, exc: IntegrityError):
     return JSONResponse(content={"detail": exc.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
+async def cache_error_exc_handler(request: Request, exc: CacheError):
+    return JSONResponse(content={"detail": exc.message}, status_code=status.HTTP_400_BAD_REQUEST)
+
+
+async def activation_error_exc_handler(request: Request, exc: ActivationError):
+    return JSONResponse(content={"detail": exc.message}, status_code=status.HTTP_400_BAD_REQUEST)
+
+
 def init_exc_handlers(app: FastAPI):
     app.add_exception_handler(DomainValidationError, validation_error_exc_handler)
     app.add_exception_handler(InternalServerError, internal_server_error_exc_handler)
@@ -49,3 +57,5 @@ def init_exc_handlers(app: FastAPI):
     app.add_exception_handler(ValidationAPIError, pwd_validation_error_exc_handler)
     app.add_exception_handler(UserBadPermissionError, bad_permission_error_exc_handler)
     app.add_exception_handler(IntegrityError, integrity_error_exc_handler)
+    app.add_exception_handler(CacheError, cache_error_exc_handler)
+    app.add_exception_handler(ActivationError, activation_error_exc_handler)

@@ -14,6 +14,7 @@ from app.domain.accounts.entity import Account
 from app.infrastructure.persistence.mappers.account import AccountMapper
 from app.infrastructure.persistence.models import AccountModel
 from app.infrastructure.persistence.repositories.account import AccountRepositoryImp
+from app.infrastructure.services.internal.security.password_hasher import PasswordHasherImp
 from app.presentation.entrypoint import app_factory
 from app.infrastructure.persistence.models.core import BaseModel
 
@@ -30,6 +31,21 @@ def anyio_backend() -> str:
 async def async_client() -> AsyncClient:
     app = app_factory()
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        yield client
+
+
+@pytest.fixture
+async def admin_client(admin_entity) -> AsyncClient:
+    app = app_factory()
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        await client.post(
+            "/api/v1/auth/login",
+            json={
+                "username": admin_entity.username.value,
+                "password": "<PASSWORD>"
+            }
+        )
+        assert client.cookies["access_token"]
         yield client
 
 
@@ -60,9 +76,10 @@ async def teardown_function(active_session) -> None:
 
 @pytest.fixture
 async def admin_entity(active_session) -> Account:
+    hashed_password = PasswordHasherImp.hash_password("<PASSWORD>")
     entity = Account.create(
         username='admin',
-        password='<PASSWORD>',
+        password=hashed_password,
         email='email@mail.ru',
     )
     repository = AccountRepositoryImp(active_session)

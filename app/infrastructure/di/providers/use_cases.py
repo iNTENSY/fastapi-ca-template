@@ -2,7 +2,9 @@ from dishka import Provider, provide, Scope
 
 from app.application.use_cases.accounts.all import GetAccountsUseCase
 from app.application.use_cases.accounts.delete import DeleteAccountUseCase
+from app.application.use_cases.accounts.forgot_password import ForgotPasswordUseCase
 from app.application.use_cases.accounts.get import GetAccountByUidUseCase
+from app.application.use_cases.accounts.reset_password import ResetPasswordUseCase
 from app.application.use_cases.accounts.update import UpdateAccountUseCase
 from app.application.use_cases.auth.activation import ActivationUseCase
 from app.application.use_cases.auth.login import LoginUseCase
@@ -25,6 +27,8 @@ class UseCasesProvider(Provider):
     _all = provide(GetAccountsUseCase)
     _delete = provide(DeleteAccountUseCase)
     _update = provide(UpdateAccountUseCase)
+    _forgot_password = provide(ForgotPasswordUseCase)
+    _reset_password = provide(ResetPasswordUseCase)
 
     _auth_login = provide(LoginUseCase)
     _auth_register = provide(RegistrationUseCase)

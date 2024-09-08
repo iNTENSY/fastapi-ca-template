@@ -7,8 +7,6 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 
 from app.application.interfaces.redis import ICache
 from app.infrastructure.di.core import init_ioc

@@ -3,16 +3,20 @@ from typing import Annotated
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter, Depends
+from starlette import status
 from starlette.requests import Request
 
-from app.application.dtos.accounts.base_responses import AccountResponse, AccountsResponse
+from app.application.dtos.accounts.base_responses import AccountResponse, AccountsResponse, BaseAccountsResponse
 from app.application.dtos.accounts.delete_request import DeleteAccountRequest
 from app.application.dtos.accounts.get_request import GetAccountRequest, GetAccountsRequest
+from app.application.dtos.accounts.password_request import ForgotPasswordRequest, ResetPasswordRequest
 from app.application.dtos.accounts.update_request import UpdateRequest
 from app.application.interfaces.jwt import IJwtProcessor
 from app.application.use_cases.accounts.all import GetAccountsUseCase
 from app.application.use_cases.accounts.delete import DeleteAccountUseCase
+from app.application.use_cases.accounts.forgot_password import ForgotPasswordUseCase
 from app.application.use_cases.accounts.get import GetAccountByUidUseCase
+from app.application.use_cases.accounts.reset_password import ResetPasswordUseCase
 from app.application.use_cases.accounts.update import UpdateAccountUseCase
 from app.domain.accounts.exceptions import InvalidTokenError, UserBadPermissionError
 from app.infrastructure.services.internal.authentication.oauth2 import auth_required
@@ -79,3 +83,19 @@ async def update_account(
     if str(payload[0].value) != str(schema.uid):
         raise UserBadPermissionError
     return await interactor(schema)
+
+
+@router.post("/forgot-password", status_code=status.HTTP_200_OK)
+async def forgot_password(
+        request: ForgotPasswordRequest,
+        interactor: FromDishka[ForgotPasswordUseCase]
+) -> BaseAccountsResponse:
+    return await interactor(request)
+
+
+@router.post("/reset-password", status_code=status.HTTP_200_OK)
+async def reset_password(
+        request: ResetPasswordRequest,
+        interactor: FromDishka[ResetPasswordUseCase]
+) -> BaseAccountsResponse:
+    return await interactor(request)

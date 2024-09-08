@@ -47,4 +47,3 @@ class Account(DomainEntity):
                 continue
             setattr(self, key, value_object_type(value))
         return self
-
