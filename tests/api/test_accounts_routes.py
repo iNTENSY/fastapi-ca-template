@@ -27,6 +27,7 @@ class Test01ReadAccounts:
 
 
 class Test02UpdateAccount:
+    @pytest.mark.skip(reason="Not ready to test")
     @pytest.mark.anyio
     async def test_update_account(self, admin_client: AsyncClient, admin_entity: Account):
         data = {

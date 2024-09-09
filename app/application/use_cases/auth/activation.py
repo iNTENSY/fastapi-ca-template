@@ -1,7 +1,7 @@
 from app.application.dtos.authentication.activation_request import ActivationRequest
 from app.application.dtos.authentication.base_responses import ActivationResponse
 from app.application.interfaces.interactor import Interactor
-from app.application.interfaces.redis import ICache
+from app.application.interfaces.cache import ICache
 from app.application.interfaces.transaction_manager import ITransactionContextManager
 from app.domain.accounts.exceptions import ActivationError, AccountNotFoundError
 from app.domain.accounts.repository import IAccountRepository

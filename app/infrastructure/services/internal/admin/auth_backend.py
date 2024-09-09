@@ -2,7 +2,7 @@ from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 
 from app.application.interfaces.password_hasher import IPasswordHasher
-from app.application.interfaces.redis import ICache
+from app.application.interfaces.cache import ICache
 from app.application.interfaces.session import ISessionProcessor
 from app.domain.accounts.exceptions import UserIsNotAuthorizedError
 from app.domain.accounts.repository import IAccountRepository

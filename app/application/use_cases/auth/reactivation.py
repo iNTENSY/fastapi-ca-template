@@ -5,7 +5,7 @@ from app.application.dtos.authentication.base_responses import ActivationRespons
 from app.application.dtos.authentication.reactivation_request import ReactivationRequest
 from app.application.interfaces.email import IEmailService
 from app.application.interfaces.interactor import Interactor
-from app.application.interfaces.redis import ICache
+from app.application.interfaces.cache import ICache
 from app.domain.accounts.entity import Account
 from app.domain.accounts.exceptions import AccountNotFoundError, ActivationError
 from app.domain.accounts.repository import IAccountRepository

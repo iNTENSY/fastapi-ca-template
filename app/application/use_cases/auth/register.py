@@ -8,7 +8,7 @@ from app.application.dtos.authentication.register_request import RegistrationReq
 from app.application.interfaces.email import IEmailService
 from app.application.interfaces.interactor import Interactor
 from app.application.interfaces.password_hasher import IPasswordHasher
-from app.application.interfaces.redis import ICache
+from app.application.interfaces.cache import ICache
 from app.application.interfaces.transaction_manager import ITransactionContextManager
 from app.domain.accounts.entity import Account
 from app.domain.accounts.repository import IAccountRepository

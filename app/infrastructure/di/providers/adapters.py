@@ -10,7 +10,7 @@ from app.application.interfaces.email import IEmailService
 from app.application.interfaces.jwt import IJwtProcessor
 from app.application.interfaces.logger import ILogger
 from app.application.interfaces.password_hasher import IPasswordHasher
-from app.application.interfaces.redis import ICache
+from app.application.interfaces.cache import ICache
 from app.application.interfaces.session import ISessionProcessor
 from app.application.interfaces.timezone import IDateTimeProcessor
 from app.application.interfaces.transaction_manager import ITransactionContextManager

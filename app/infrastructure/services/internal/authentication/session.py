@@ -2,7 +2,7 @@ import random
 import string
 import uuid
 
-from app.application.interfaces.redis import ICache
+from app.application.interfaces.cache import ICache
 from app.application.interfaces.session import ISessionProcessor
 from app.domain.accounts.exceptions import UserIsNotAuthorizedError
 from app.infrastructure.cache.schema import RedisSchema

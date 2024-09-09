@@ -2,7 +2,7 @@ from app.application.dtos.accounts.base_responses import BaseAccountsResponse
 from app.application.dtos.accounts.password_request import ResetPasswordRequest
 from app.application.interfaces.interactor import Interactor
 from app.application.interfaces.password_hasher import IPasswordHasher
-from app.application.interfaces.redis import ICache
+from app.application.interfaces.cache import ICache
 from app.application.interfaces.transaction_manager import ITransactionContextManager
 from app.domain.accounts.entity import Account
 from app.domain.accounts.exceptions import AccountNotFoundError, UserBadPermissionError, CacheError

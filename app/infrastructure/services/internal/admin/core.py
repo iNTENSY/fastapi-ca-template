@@ -4,7 +4,7 @@ from sqladmin import Admin
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app.application.interfaces.password_hasher import IPasswordHasher
-from app.application.interfaces.redis import ICache
+from app.application.interfaces.cache import ICache
 from app.application.interfaces.session import ISessionProcessor
 from app.domain.accounts.repository import IAccountRepository
 from app.infrastructure.services.internal.admin.auth_backend import AdminAuthBackend

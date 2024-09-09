@@ -5,7 +5,7 @@ from app.application.dtos.accounts.base_responses import BaseAccountsResponse
 from app.application.dtos.accounts.password_request import ForgotPasswordRequest
 from app.application.interfaces.email import IEmailService
 from app.application.interfaces.interactor import Interactor
-from app.application.interfaces.redis import ICache
+from app.application.interfaces.cache import ICache
 from app.domain.accounts.repository import IAccountRepository
 from app.infrastructure.cache.schema import RedisSchema
 from app.infrastructure.settings.core import Settings

@@ -1,7 +1,7 @@
 from typing import Any
 
 from redis import asyncio as aioredis
-from app.application.interfaces.redis import ICache
+from app.application.interfaces.cache import ICache
 from app.infrastructure.cache.schema import RedisSchema
 
 
@@ -21,7 +21,7 @@ class RedisAdapter(ICache):
         await self.__redis.delete(*keys)
 
     @property
-    def redis(self) -> aioredis.Redis:
+    def engine(self) -> aioredis.Redis:
         return self.__redis
 
     async def close(self) -> None:

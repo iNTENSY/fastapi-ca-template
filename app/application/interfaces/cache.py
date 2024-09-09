@@ -13,5 +13,5 @@ class ICache(Protocol):
     async def close(self) -> None: ...
 
     @property
-    def redis(self):
+    def engine(self):
         raise NotImplementedError
