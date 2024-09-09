@@ -12,7 +12,10 @@ class AccountRepositoryImp(IAccountRepository):
         self.__connection = connection
 
     async def create(self, entity: Account) -> None:
-        statement = insert(AccountModel).values(**AccountMapper.generate_to_dict(entity))
+        statement = (
+            insert(AccountModel)
+            .values(**AccountMapper.generate_to_dict(entity))
+        )
         await self.__connection.execute(statement)
 
     async def filter_by(self, **parameters) -> list[Account]:
