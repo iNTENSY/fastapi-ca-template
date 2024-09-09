@@ -17,11 +17,11 @@ class LoginUseCase(Interactor[LoginRequest, AccountResponse]):
         self.__pwd_hasher = pwd_hasher
 
     async def __call__(self, request: LoginRequest) -> AccountResponse:
-        entity = await self.__get(username=request.username)
+        entity = await self.__get_entity(username=request.username)
         self.__verify_password(request.password, entity.password.value)
         return AccountResponse.create(entity)
 
-    async def __get(self, username: str) -> Account:
+    async def __get_entity(self, username: str) -> Account:
         entity = await self.__repository.filter_by(username=username)
         if not entity:
             raise AccountNotFoundError
