@@ -27,17 +27,17 @@ class Test01ReadAccounts:
 
 
 class Test02UpdateAccount:
-    @pytest.mark.skip(reason="Not ready to test")
     @pytest.mark.anyio
     async def test_update_account(self, admin_client: AsyncClient, admin_entity: Account):
         data = {
-            "uid": admin_entity.id,
+            "uid": str(admin_entity.id.value),
             "username": "NewAccountUserName",
+            "email": admin_entity.email.value
         }
-        response = await async_client.patch('/api/v1/accounts/', json=data)
+        response = await admin_client.patch('/api/v1/accounts/', json=data)
 
         assert response.status_code == status.HTTP_200_OK
 
         data = response.json()
-        assert data["uid"] == admin_entity.id.value
+        assert data["uid"] == str(admin_entity.id.value)
         assert data["username"] == "NewAccountUserName"
