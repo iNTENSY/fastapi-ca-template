@@ -7,7 +7,7 @@ from app.application.interfaces.email import IEmailService
 from app.application.interfaces.interactor import Interactor
 from app.application.interfaces.cache import ICache
 from app.domain.accounts.repository import IAccountRepository
-from app.infrastructure.cache.schema import RedisSchema
+from app.infrastructure.services.internal.cache.schema import RedisSchema
 from app.infrastructure.settings.core import Settings
 
 

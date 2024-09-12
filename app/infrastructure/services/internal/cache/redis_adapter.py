@@ -2,7 +2,7 @@ from typing import Any
 
 from redis import asyncio as aioredis
 from app.application.interfaces.cache import ICache
-from app.infrastructure.cache.schema import RedisSchema
+from app.infrastructure.services.internal.cache.schema import RedisSchema
 
 
 class RedisAdapter(ICache):

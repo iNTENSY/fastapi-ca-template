@@ -42,7 +42,10 @@ def init_routes(app: FastAPI) -> None:
 
 def app_factory() -> FastAPI:
     """Application factory."""
-    app = FastAPI(debug=bool(os.environ.get("DEBUG")), lifespan=app_lifespan)
+    app = FastAPI(
+        debug=bool(os.environ.get("DEBUG")),
+        lifespan=app_lifespan
+    )
 
     init_ioc(app)
     init_limiter(app)

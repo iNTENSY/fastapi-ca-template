@@ -1,6 +1,5 @@
 import logging
 import os
-from typing import AsyncIterable
 
 from redis import asyncio as aioredis
 from dishka import Provider, provide, Scope
@@ -14,9 +13,9 @@ from app.application.interfaces.cache import ICache
 from app.application.interfaces.session import ISessionProcessor
 from app.application.interfaces.timezone import IDateTimeProcessor
 from app.application.interfaces.transaction_manager import ITransactionContextManager
-from app.infrastructure.cache.redis_adapter import RedisAdapter
-from app.infrastructure.logger.config import LoggerSettings
-from app.infrastructure.logger.logger import LoggerImp
+from app.infrastructure.services.internal.cache.redis_adapter import RedisAdapter
+from app.infrastructure.services.internal.logger.config import LoggerSettings
+from app.infrastructure.services.internal.logger.logger import LoggerImp
 from app.infrastructure.persistence.transaction_manager import PostgreSQLTransactionContextManagerImp
 from app.infrastructure.services.external.email.core import EmailServiceImp
 from app.infrastructure.services.external.email.settings import EmailSettings
@@ -47,7 +46,7 @@ class SQLAlchemyProvider(Provider):
         return async_sessionmaker(bind=engine, expire_on_commit=False, class_=AsyncSession)
 
     @provide(scope=Scope.REQUEST, provides=AsyncSession)
-    async def provide_session(self, session_maker: async_sessionmaker[AsyncSession]) -> AsyncIterable[AsyncSession]:
+    async def provide_session(self, session_maker: async_sessionmaker[AsyncSession]) -> AsyncSession:
         async with session_maker() as session:
             yield session
 

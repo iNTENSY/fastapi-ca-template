@@ -13,7 +13,7 @@ from app.application.interfaces.transaction_manager import ITransactionContextMa
 from app.domain.accounts.entity import Account
 from app.domain.accounts.repository import IAccountRepository
 from app.domain.core import exceptions
-from app.infrastructure.cache.schema import RedisSchema
+from app.infrastructure.services.internal.cache.schema import RedisSchema
 from app.infrastructure.services.internal.security.password_validator import PasswordValidator
 from app.infrastructure.settings.core import Settings
 

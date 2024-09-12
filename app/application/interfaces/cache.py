@@ -1,6 +1,6 @@
 from typing import Protocol, Any
 
-from app.infrastructure.cache.schema import RedisSchema
+from app.infrastructure.services.internal.cache.schema import RedisSchema
 
 
 class ICache(Protocol):

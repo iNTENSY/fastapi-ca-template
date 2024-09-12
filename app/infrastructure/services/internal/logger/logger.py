@@ -2,7 +2,7 @@ import logging
 import sys
 
 from app.application.interfaces.logger import ILogger
-from app.infrastructure.logger.config import LoggerSettings
+from app.infrastructure.services.internal.logger.config import LoggerSettings
 
 
 class LoggerImp(ILogger):
