@@ -38,7 +38,7 @@ class Account(DomainEntity):
             is_superuser=BooleanVO(is_superuser),
         )
 
-    def update(self, **kwargs) -> "Account":
+    def update(self, **kwargs) -> None:
         for key, value in kwargs.items():
             if hasattr(self, key):
                 attribute: ValueObject = getattr(self, key)
@@ -46,4 +46,3 @@ class Account(DomainEntity):
             else:
                 continue
             setattr(self, key, value_object_type(value))
-        return self

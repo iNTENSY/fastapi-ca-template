@@ -1,18 +1,11 @@
-import asyncio
 import os
-from typing import Type, AsyncIterable, Generator
 
 import pytest
 from httpx import AsyncClient, ASGITransport
-from sqladmin import Admin
-from sqlalchemy import create_engine, QueuePool, insert, text, event
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession, AsyncEngine, \
-    async_scoped_session
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession, AsyncEngine
 
 from app.domain.accounts.entity import Account
-from app.infrastructure.persistence.mappers.account import AccountMapper
-from app.infrastructure.persistence.models import AccountModel
 from app.infrastructure.persistence.repositories.account import AccountRepositoryImp
 from app.infrastructure.services.internal.security.password_hasher import PasswordHasherImp
 from app.presentation.entrypoint import app_factory

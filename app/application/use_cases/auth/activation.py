@@ -3,9 +3,9 @@ from app.application.dtos.authentication.base_responses import ActivationRespons
 from app.application.interfaces.interactor import Interactor
 from app.application.interfaces.cache import ICache
 from app.application.interfaces.transaction_manager import ITransactionContextManager
+from app.domain.accounts.entity import Account
 from app.domain.accounts.exceptions import ActivationError, AccountNotFoundError
 from app.domain.accounts.repository import IAccountRepository
-from app.domain.core.value_objects import BooleanVO
 
 
 class ActivationUseCase(Interactor[ActivationRequest, ActivationResponse]):
@@ -21,21 +21,33 @@ class ActivationUseCase(Interactor[ActivationRequest, ActivationResponse]):
 
     async def __call__(self, request: ActivationRequest) -> ActivationResponse:
         expected_code = await self.__cache.get(f"activation-{request.email}")
+        await self.__verify_activation_code(expected_code, request.code)
+
+        entity = await self.__get_entity(request.email)
+        await self.__cache.delete(f"activation-{request.email}")
+
+        await self.__update_entity(entity, is_verified=True)
+        await self.__transaction.commit()
+        return ActivationResponse.create("Аккаунт успешно активирован")
+
+    async def __verify_activation_code(self, expected_code: str, request_code: str) -> None:
         if not expected_code:
             raise ActivationError("Запроса на активацию аккаунта не поступало, либо время истекло.")
-        if int(expected_code) != request.code:
+        if str(expected_code) != request_code:
             raise ActivationError("Неверный код активации")
 
-        try:
-            entity = (await self.__repository.filter_by(email=request.email))[0]
-        except Exception:
+    async def __get_entity(self, email: str) -> Account:
+        entity = await self.__repository.filter_by(email=email)
+        if not entity:
             raise AccountNotFoundError
+
+        entity = entity[0]
 
         if entity.is_verified.value:
             raise ActivationError("Аккаунт уже активирован")
+        return entity
 
-        await self.__cache.delete(f"activation-{request.email}")
-        entity.is_verified = BooleanVO(value=True)
+    async def __update_entity(self, entity: Account, **fields) -> Account:
+        entity.update(**fields)
         await self.__repository.update(entity)
-        await self.__transaction.commit()
-        return ActivationResponse.create("Аккаунт успешно активирован")
+        return entity

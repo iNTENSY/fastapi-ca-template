@@ -23,17 +23,16 @@ class ResetPasswordUseCase(Interactor[ResetPasswordRequest, BaseAccountsResponse
         self.__cache = cache
 
     async def __call__(self, request: ResetPasswordRequest) -> BaseAccountsResponse:
-        try:
-            entity = await self.__get(request.email)
-        except IndexError:
-            raise AccountNotFoundError
+        entity = await self.__get_entity(request.email)
 
         await self.__validate_code(request.code, request.email)
         await self.__update(entity, request.password)
         return BaseAccountsResponse.create("Пароль был успешно обновлен.")
 
-    async def __get(self, email: str) -> Account:
+    async def __get_entity(self, email: str) -> Account:
         entity = await self.__repository.filter_by(email=email)
+        if not entity:
+            raise AccountNotFoundError
         return entity[0]
 
     async def __validate_code(self, code: str, email: str) -> None:

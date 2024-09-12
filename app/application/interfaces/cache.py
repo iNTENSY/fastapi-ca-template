@@ -4,7 +4,7 @@ from app.infrastructure.services.internal.cache.schema import RedisSchema
 
 
 class ICache(Protocol):
-    async def get(self, key: Any) -> bytes:
+    async def get(self, key: Any) -> bytes | str:
         raise NotImplementedError
 
     async def set(self, *collections: RedisSchema) -> None:

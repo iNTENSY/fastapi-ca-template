@@ -1,4 +1,4 @@
-from typing import Any, Tuple
+from typing import Any
 
 import pytest
 
@@ -55,6 +55,7 @@ class Test02AccountBaseAction:
             email="email@mail.ru",
             password="<PASSWORD>",
         )
+        object_id_before_update = id(account)
 
         data_for_update = {
             "username": "NewUsername",
@@ -66,4 +67,5 @@ class Test02AccountBaseAction:
         account.update(**data_for_update)
         data_for_update["id"] = account.id.value
 
+        assert id(account) == object_id_before_update
         self.check_expected_entity_fields(account, data_for_update)
