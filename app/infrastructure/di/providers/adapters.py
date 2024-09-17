@@ -73,7 +73,8 @@ class SettingsProvider(Provider):
     def provide_project_settings(self) -> Settings:
         secret_key = os.environ.get("SECRET_KEY")
         activation_code_lifetime = int(os.environ.get("ACTIVATION_CODE_LIFETIME"))
-        return Settings.create(secret_key, activation_code_lifetime)
+        reset_pwd_code_lifetime = int(os.environ.get("RESET_PWD_CODE_LIFETIME"))
+        return Settings.create(secret_key, activation_code_lifetime, reset_pwd_code_lifetime)
 
 
 class RedisProvider(Provider):

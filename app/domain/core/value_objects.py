@@ -82,7 +82,9 @@ class StringVO(ValueObject):
 
     def validate(self) -> None:
         if not isinstance(self.value, str):
-            raise DomainValidationError(message=f"Value ({self.value}) must be of type STRING")
+            raise DomainValidationError(
+                message=f"Value ({self.value}) must be of type STRING"
+            )
 
 
 @dataclass(frozen=True)

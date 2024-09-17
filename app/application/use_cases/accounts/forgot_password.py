@@ -36,7 +36,7 @@ class ForgotPasswordUseCase(Interactor[ForgotPasswordRequest, BaseAccountsRespon
         schema = RedisSchema.create(
             key=f"reset-pwd-{email}",
             value=code,
-            ex=self.__settings.activation_code_lifetime
+            ex=self.__settings.reset_pwd_code_lifetime
         )
         await self.__cache.set(schema)
 

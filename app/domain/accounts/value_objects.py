@@ -13,4 +13,4 @@ class UsernameVO(StringVO):
             raise DomainValidationError("Username must have only alphabet letters.")
 
         if len(self.value) < 4:
-            raise DomainValidationError("Username must be grater then 4 chars.")
+            raise DomainValidationError("Username must be more than 4 characters.")
