@@ -89,10 +89,11 @@ async def update_account(
 @router.post("/forgot-password", status_code=status.HTTP_200_OK)
 @limiter.limit("3/hour")
 async def forgot_password(
-        request: ForgotPasswordRequest,
+        request: Request,
+        _request: ForgotPasswordRequest,
         interactor: FromDishka[ForgotPasswordUseCase]
 ) -> BaseAccountsResponse:
-    return await interactor(request)
+    return await interactor(_request)
 
 
 @router.post("/reset-password", status_code=status.HTTP_200_OK)

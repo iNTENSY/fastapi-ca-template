@@ -4,6 +4,7 @@ from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter, Depends
 from fastapi.responses import Response
+from starlette.requests import Request
 
 from app.application.dtos.authentication.activation_request import ActivationRequest
 from app.application.dtos.authentication.base_responses import LoginResponse, RegistrationResponse, LogoutResponse, \
@@ -59,7 +60,8 @@ async def activate(
 @router.get("/reactivate", response_model=ActivationResponse)
 @limiter.limit("3/hour")
 async def reactivate(
-        request: Annotated[ReactivationRequest, Depends()],
+        request: Request,
+        _request: Annotated[ReactivationRequest, Depends()],
         interactor: FromDishka[ReactivationUseCase]
 ) -> ActivationResponse:
-    return await interactor(request)
+    return await interactor(_request)
