@@ -18,7 +18,7 @@ from app.application.use_cases.accounts.forgot_password import ForgotPasswordUse
 from app.application.use_cases.accounts.get import GetAccountByUidUseCase
 from app.application.use_cases.accounts.reset_password import ResetPasswordUseCase
 from app.application.use_cases.accounts.update import UpdateAccountUseCase
-from app.domain.accounts.exceptions import InvalidTokenError, UserBadPermissionError
+from app.domain.accounts.exceptions import InvalidTokenError, AccountBadPermissionError
 from app.infrastructure.services.internal.authentication.oauth2 import auth_required
 from app.infrastructure.services.internal.limiter.core import limiter
 
@@ -82,7 +82,7 @@ async def update_account(
     if payload is None:
         raise InvalidTokenError
     if str(payload[0].value) != str(schema.uid):
-        raise UserBadPermissionError
+        raise AccountBadPermissionError
     return await interactor(schema)
 
 

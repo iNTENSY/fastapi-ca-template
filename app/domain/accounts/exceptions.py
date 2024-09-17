@@ -16,12 +16,12 @@ class InvalidAccountDataError(DomainError):
         super().__init__(message="Invalid user data")
 
 
-class UserIsNotAuthorizedError(DomainError):
+class AccountIsNotAuthorizedError(DomainError):
     def __init__(self):
         super().__init__(message="User is not authorized")
 
 
-class UserBadPermissionError(DomainError):
+class AccountBadPermissionError(DomainError):
     def __init__(self):
         super().__init__(message="User has bad permission")
 

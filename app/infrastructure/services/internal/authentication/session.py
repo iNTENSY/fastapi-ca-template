@@ -4,7 +4,7 @@ import uuid
 
 from app.application.interfaces.cache import ICache
 from app.application.interfaces.session import ISessionProcessor
-from app.domain.accounts.exceptions import UserIsNotAuthorizedError
+from app.domain.accounts.exceptions import AccountIsNotAuthorizedError
 from app.infrastructure.services.internal.cache.schema import RedisSchema
 from app.infrastructure.settings.session import SessionSettings
 
@@ -23,7 +23,7 @@ class SessionProcessorImp(ISessionProcessor):
     async def validate(self, session: str) -> tuple[str, str]:
         value = await self.__redis.get(key=session)
         if value is None:
-            raise UserIsNotAuthorizedError
+            raise AccountIsNotAuthorizedError
         return session, value # noqa: Value is auto-decoded
 
     async def delete_session(self, session: str) -> None:

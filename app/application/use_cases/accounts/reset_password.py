@@ -5,7 +5,7 @@ from app.application.interfaces.password_hasher import IPasswordHasher
 from app.application.interfaces.cache import ICache
 from app.application.interfaces.transaction_manager import ITransactionContextManager
 from app.domain.accounts.entity import Account
-from app.domain.accounts.exceptions import AccountNotFoundError, UserBadPermissionError, CacheError
+from app.domain.accounts.exceptions import AccountNotFoundError, AccountBadPermissionError, CacheError
 from app.domain.accounts.repository import IAccountRepository
 
 
@@ -42,7 +42,7 @@ class ResetPasswordUseCase(Interactor[ResetPasswordRequest, BaseAccountsResponse
         if not cached_code:
             raise CacheError("Запроса на смену пароля не поступало")
         if str(cached_code) != str(code):
-            raise UserBadPermissionError
+            raise AccountBadPermissionError
 
         await self.__cache.delete(key)
 

@@ -4,7 +4,7 @@ from starlette.requests import Request
 from app.application.interfaces.password_hasher import IPasswordHasher
 from app.application.interfaces.cache import ICache
 from app.application.interfaces.session import ISessionProcessor
-from app.domain.accounts.exceptions import UserIsNotAuthorizedError
+from app.domain.accounts.exceptions import AccountIsNotAuthorizedError
 from app.domain.accounts.repository import IAccountRepository
 
 
@@ -51,5 +51,5 @@ class AdminAuthBackend(AuthenticationBackend):
             return False
         try:
             return bool(await self.__session.validate(token))
-        except (UserIsNotAuthorizedError, Exception):
+        except (AccountIsNotAuthorizedError, Exception):
             return False

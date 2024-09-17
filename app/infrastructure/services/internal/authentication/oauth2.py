@@ -6,7 +6,7 @@ from fastapi.security.utils import get_authorization_scheme_param
 from starlette.requests import Request
 from starlette import status
 
-from app.domain.accounts.exceptions import UserIsNotAuthorizedError
+from app.domain.accounts.exceptions import AccountIsNotAuthorizedError
 
 
 class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
@@ -34,5 +34,5 @@ oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="/api/v1/auth/login")
 
 async def auth_required(request: Request, token=Depends(oauth2_scheme)) -> None:
     if token is None:
-        raise UserIsNotAuthorizedError
+        raise AccountIsNotAuthorizedError
     request.scope["auth_token"] = token
