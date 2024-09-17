@@ -27,6 +27,7 @@ class ForgotPasswordUseCase(Interactor[ForgotPasswordRequest, BaseAccountsRespon
         self.__cache = cache
 
     async def __call__(self, request: ForgotPasswordRequest) -> BaseAccountsResponse:
+        await self.__validate_entity_by_email(request.email)
 
         generated_code = self.__generate_special_code()
         email = request.email
